@@ -14,7 +14,9 @@ const Sidebar: FC<SidebarProps> = ({ }) => {
     const router = useRouter()
 
     const navMenu = () => router.push('/menu')
-
+    const navDapur = () => router.push('/dapur')
+    const navKasir = () => router.push('/kasir')
+    const navOrder = () => router.push('/order')
 
     return (
         <div className='pb-12 min-h-screen'>
@@ -32,15 +34,15 @@ const Sidebar: FC<SidebarProps> = ({ }) => {
                             <AiOutlineShop className="mr-2 text-lg" />
                             Menu
                         </Button>
-                        <Button variant={"ghost"} className='w-full justify-start rounded-none hover:text-primary'>
+                        <Button variant={"ghost"} onClick={navOrder} className='w-full justify-start rounded-none hover:text-primary'>
                             <AiOutlineSnippets className="mr-2 text-lg" />
                             Order
                         </Button>
-                        <Button variant={"ghost"} className='w-full justify-start rounded-none hover:text-primary'>
+                        <Button variant={"ghost"} onClick={navDapur} className='w-full justify-start rounded-none hover:text-primary'>
                             <BsDoorOpen className="mr-2 text-lg" />
                             Dapur
                         </Button>
-                        <Button variant={"ghost"} className='w-full justify-start rounded-none hover:text-primary'>
+                        <Button variant={"ghost"} onClick={navKasir} className='w-full justify-start rounded-none hover:text-primary'>
                             <BsBasket className="mr-2 text-lg" />
                             Kasir
                         </Button>
