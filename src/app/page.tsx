@@ -1,4 +1,5 @@
 import DapurForm from '@/components/form/DapurForm'
+import KasirForm from '@/components/form/KasirForm'
 import MenuForm from '@/components/form/MenuForm'
 import OrderForm from '@/components/form/OrderForm'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -23,6 +24,9 @@ export default function Home() {
 				</TabsContent>
 				<TabsContent value="dapur">
 					<DapurForm />
+				</TabsContent>
+				<TabsContent value="kasir">
+					<KasirForm />
 				</TabsContent>
 			</Tabs>
 		</div>
