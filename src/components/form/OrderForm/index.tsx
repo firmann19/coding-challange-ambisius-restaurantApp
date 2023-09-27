@@ -4,22 +4,42 @@ import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { KUANTITAS_OPTIONS, MENU_OPTIONS, optionType } from '@/constants'
-import { orderFormSchema } from '@/lib/form-schema'
+import { MENU_OPTIONS, optionType } from '@/constants'
+import { OrderForm, menuFormSchema } from '@/lib/form-schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { z } from 'zod';
 
-type Order = z.infer<typeof orderFormSchema>;
+export default function OrderForm() {
+	type Menu = z.infer<typeof menuFormSchema>;
 
-export default function OrderForm({ initialData }: { initialData?: Order }) {
-	const [order, setOrder] = useState<Order[]>([]);
+	const [form, setForm] = useState<OrderForm>({
+		id: "",
+		menuId: { value: "", label: "Pilih Menu" },
+		quantity: { value: 0, label: "Kuantitas" },
+	});
 
-	const form = useForm<Order>({
-		resolver: zodResolver(orderFormSchema),
-		defaultValues: initialData,
-	})
+	const [menu, setMenu] = useState<Menu[] | []>();
+	let menuOptions: optionType[] = [{ value: "", label: "Pilih menu" }];
+	const quantityOptions: optionType[] = [
+		{ value: 0, label: "Kuantitas" },
+		{ value: 1, label: "1" },
+		{ value: 2, label: "2" },
+		{ value: 3, label: "3" },
+	];
+
+	useEffect(() => {
+		const localMenus = localStorage.getItem('menu');
+		setMenu(JSON.parse(localMenus || "[]"));
+	}, []);
+
+	menu?.map((menu: Menu) => {
+		menuOptions.push({
+			value: menu.id,
+			label: menu.menu,
+		});
+	});
 
 	const onSubmit = (data: Order) => {
 		//Menambahkan data baru ke array menu
@@ -27,19 +47,6 @@ export default function OrderForm({ initialData }: { initialData?: Order }) {
 		//Membersihkan input formulir
 		form.reset();
 	}
-
-	useEffect(() => {
-		const json = localStorage.getItem('menu');
-		const menuMakanan = json ? JSON.parse(json) : [];
-
-		setOrder(menuMakanan);
-
-	}, [order])
-
-	const json = localStorage.getItem('menu');
-	console.log("data", json)
-	const menuMakanan = json ? JSON.parse(json) : [];
-
 
 	return (
 		<Form {...form}>
