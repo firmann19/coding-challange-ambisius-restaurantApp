@@ -7,11 +7,6 @@ export const menuFormSchema = z.object({
 	nameMenu: z.string({ required_error: "Name is required" }),
 });
 
-export const orderFormSchema = z.object({
-	pilih_menu: z.string({ required_error: "Menu harus diisi" }),
-	kuantitas: z.string({ required_error: "Jumlah Menu harus diisi" }),
-});
-
 export const kasirFormSchema = z.object({
 	nomor_meja: z.string({ required_error: "Nomor Meja harus diisi" }),
 });

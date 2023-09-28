@@ -7,7 +7,7 @@ import { OrderForm, menuFormSchema } from '@/lib/form-schema'
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 
-export default function OrderForm() {
+const OrderForm = () => {
 	type Menu = z.infer<typeof menuFormSchema>;
 
 	const [form, setForm] = useState<OrderForm>({
@@ -77,8 +77,8 @@ export default function OrderForm() {
 										: setForm({ ...form, tableId: "1" });
 								}}
 								className={`${form.tableId === "1"
-										? "bg-neutral-900 text-white"
-										: "hover:bg-slate-50"
+									? "bg-blue-700 text-white"
+									: "hover:bg-slate-50"
 									} w-full h-[70px] rounded-l-xl border-r px-3 py-2`}
 							>
 								Meja 1
@@ -92,8 +92,8 @@ export default function OrderForm() {
 										: setForm({ ...form, tableId: "2" });
 								}}
 								className={`${form.tableId === "2"
-										? "bg-neutral-900 text-white"
-										: "hover:bg-slate-50"
+									? "bg-blue-700 text-white"
+									: "hover:bg-slate-50"
 									} w-full h-[70px] px-3 py-2`}
 							>
 								Meja 2
@@ -107,8 +107,8 @@ export default function OrderForm() {
 										: setForm({ ...form, tableId: "3" });
 								}}
 								className={`${form.tableId === "3"
-										? "bg-neutral-900 text-white"
-										: "hover:bg-slate-50"
+									? "bg-blue-700 text-white"
+									: "hover:bg-slate-50"
 									} w-full h-[70px] rounded-r-xl border-l px-3 py-2`}
 							>
 								Meja 3
@@ -169,9 +169,9 @@ export default function OrderForm() {
 					</div>
 				</div>
 				<div className="text-right">
-					<button
+					<Button
 						onClick={onSubmit}
-						className="text-right bg-zinc-900 hover:bg-zinc-700 text-white py-2 px-4 rounded-md disabled:opacity-50"
+						className="text-right bg-blue-700 hover:bg-blue-500 text-white py-2 px-4 rounded-md disabled:opacity-50"
 						disabled={
 							form.tableId === "" ||
 							form.menuId.value === "" ||
@@ -179,9 +179,11 @@ export default function OrderForm() {
 						}
 					>
 						Tambah
-					</button>
+					</Button>
 				</div>
 			</div>
 		</section>
 	)
 }
+
+export default OrderForm

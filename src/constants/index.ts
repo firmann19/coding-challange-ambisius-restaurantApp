@@ -16,4 +16,4 @@ export type Order = {
   menu?: Menu;
 };
 
-export const defaultMenus: string = `[{"id":"45342","name":"Bebek Madura"},{"id":"12234","name":"Sate Kambing"}]`;
+export const defaultMenus: string = `[{"id":"45342","nameMenu":"Ayam Kecap Manis"},{"id":"12234","nameMenu":"Nasi Goreng"}]`;

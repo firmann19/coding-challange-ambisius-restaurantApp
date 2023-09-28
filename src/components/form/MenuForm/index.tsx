@@ -8,20 +8,20 @@ import { Button } from "@/components/ui/button";
 import { defaultMenus } from "@/constants";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-type Menu = z.infer<typeof menuFormSchema>;
-
 const MenuForm = () => {
+	type Menu = z.infer<typeof menuFormSchema>;
+
 	const [menu, setMenu] = useState<Menu[]>([]);
 	const [menus, setMenus] = useState<string>("");
 
 	useEffect(() => {
-		let json = localStorage.getItem("menu");
+		let dataMenu = localStorage.getItem("menu");
 
-		if (json === null) {
+		if (dataMenu === null) {
 			localStorage.setItem("menu", defaultMenus);
-			json = localStorage.getItem("menu") || "[]";
+			dataMenu = localStorage.getItem("menu") || "[]";
 		}
-		setMenu(JSON.parse(json));
+		setMenu(JSON.parse(dataMenu));
 	}, [])
 
 	const handleDeleteMenu = (id: string) => {
@@ -31,7 +31,7 @@ const MenuForm = () => {
 	};
 
 	const onSubmit = (): void => {
-		menu?.push({
+		menu.push({
 			id: Math.floor(100000 + Math.random() * 900000).toString(),
 			nameMenu: menus,
 		});
@@ -58,8 +58,8 @@ const MenuForm = () => {
 						/>
 						<Button
 							onClick={onSubmit}
-							className="ml-2 bg-zinc-900 hover:bg-zinc-700 text-white py-2 px-4 rounded-md disabled:opacity-50"
-							disabled={!menu}
+							className="ml-2 bg-blue-700 hover:bg-blue-500 text-white py-2 px-4 rounded-md disabled:opacity-50"
+							disabled={!menus}
 						>
 							Tambah
 						</Button>
@@ -94,7 +94,7 @@ const MenuForm = () => {
 						</Table>
 
 						<p className="text-center text-gray-500 mt-5">
-							Daftar menu restoran Anda
+							Daftar Menu Restoran Anda
 						</p>
 					</div>
 				</div>
