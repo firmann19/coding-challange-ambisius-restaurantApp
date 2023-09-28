@@ -1,21 +1,17 @@
 "use client";
 
+import Select from "react-select";
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { MENU_OPTIONS, optionType } from '@/constants'
+import { Order, optionType } from '@/constants'
 import { OrderForm, menuFormSchema } from '@/lib/form-schema'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form'
 import { z } from 'zod';
 
 export default function OrderForm() {
 	type Menu = z.infer<typeof menuFormSchema>;
 
 	const [form, setForm] = useState<OrderForm>({
-		id: "",
+		tableId: "",
 		menuId: { value: "", label: "Pilih Menu" },
 		quantity: { value: 0, label: "Kuantitas" },
 	});
@@ -37,105 +33,155 @@ export default function OrderForm() {
 	menu?.map((menu: Menu) => {
 		menuOptions.push({
 			value: menu.id,
-			label: menu.menu,
+			label: menu.nameMenu,
 		});
 	});
 
-	const onSubmit = (data: Order) => {
-		//Menambahkan data baru ke array menu
-		setOrder((prev) => [...prev, data]);
-		//Membersihkan input formulir
-		form.reset();
+	const onSubmit = (): void => {
+		let localStorageOrders: Array<Order> | string | null =
+			localStorage.getItem("orders");
+
+		if (localStorageOrders === null) {
+			localStorage.setItem("orders", "[]");
+			localStorageOrders = localStorage.getItem("orders") || "[]";
+		}
+
+		localStorageOrders = JSON.parse(localStorageOrders) as Array<Order>;
+
+		localStorageOrders.push({
+			id: Math.floor(100000 + Math.random() * 900000).toString(),
+			tableId: form.tableId,
+			menuId: form.menuId.value,
+			quantity: form.quantity.value,
+		});
+
+		setForm({
+			tableId: "",
+			menuId: menuOptions[0],
+			quantity: quantityOptions[0],
+		});
+
+		localStorage.setItem("orders", JSON.stringify(localStorageOrders));
 	}
 
 	return (
-		<Form {...form}>
-			<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
-				<Tabs defaultValue="meja1">
-					<TabsList className="mb-8">
-						<TabsTrigger value="meja1">Meja 1</TabsTrigger>
-						<TabsTrigger value="meja2">Meja 2</TabsTrigger>
-						<TabsTrigger value="meja3">Meja 3</TabsTrigger>
-					</TabsList>
-				</Tabs>
-
-				<div className='flex gap-4'>
-					<FormField
-						control={form.control}
-						name="pilih_menu"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Menu</FormLabel>
-								<Select
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-								>
-									<FormControl>
-										<SelectTrigger className="w-[450px]">
-											<SelectValue placeholder="Pilih Menu" />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent>
-										{menuMakanan.map(
-											(
-												item: optionType,
-												i: number
-											) => (
-												<SelectItem
-													key={item.id + i}
-													value={item.id}
-												>
-													{item.label}
-												</SelectItem>
-											)
-										)}
-									</SelectContent>
-								</Select>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
-
-					<FormField
-						control={form.control}
-						name="kuantitas"
-						render={({ field }) => (
-							<FormItem>
-								<FormLabel>Kuantitas</FormLabel>
-								<Select
-									onValueChange={field.onChange}
-									defaultValue={field.value}
-								>
-									<FormControl>
-										<SelectTrigger className="w-[200px]">
-											<SelectValue placeholder="Kuantitas" />
-										</SelectTrigger>
-									</FormControl>
-									<SelectContent>
-										{KUANTITAS_OPTIONS.map(
-											(
-												item: optionType,
-												i: number
-											) => (
-												<SelectItem
-													key={item.id + i}
-													value={item.id}
-												>
-													{item.label}
-												</SelectItem>
-											)
-										)}
-									</SelectContent>
-								</Select>
-								<FormMessage />
-							</FormItem>
-						)}
-					/>
+		<section className="order">
+			<div className="h-auto min-h-[300px] p-5 rounded-md bg-slate-100 text-sm">
+				<div className="border rounded-xl bg-white mb-4">
+					<ul className="flex">
+						<li className="flex-1">
+							<button
+								onClick={() => {
+									form.tableId === "1"
+										? setForm({ ...form, tableId: "" })
+										: setForm({ ...form, tableId: "1" });
+								}}
+								className={`${form.tableId === "1"
+										? "bg-neutral-900 text-white"
+										: "hover:bg-slate-50"
+									} w-full h-[70px] rounded-l-xl border-r px-3 py-2`}
+							>
+								Meja 1
+							</button>
+						</li>
+						<li className="flex-1">
+							<button
+								onClick={() => {
+									form.tableId === "2"
+										? setForm({ ...form, tableId: "" })
+										: setForm({ ...form, tableId: "2" });
+								}}
+								className={`${form.tableId === "2"
+										? "bg-neutral-900 text-white"
+										: "hover:bg-slate-50"
+									} w-full h-[70px] px-3 py-2`}
+							>
+								Meja 2
+							</button>
+						</li>
+						<li className="flex-1">
+							<button
+								onClick={() => {
+									form.tableId === "3"
+										? setForm({ ...form, tableId: "" })
+										: setForm({ ...form, tableId: "3" });
+								}}
+								className={`${form.tableId === "3"
+										? "bg-neutral-900 text-white"
+										: "hover:bg-slate-50"
+									} w-full h-[70px] rounded-r-xl border-l px-3 py-2`}
+							>
+								Meja 3
+							</button>
+						</li>
+					</ul>
 				</div>
-				<div className='mt-3'>
-					<Button size="sm">Tambahkan</Button>
+				<div className="flex mb-2">
+					<div className="grow mr-2">
+						<p className="mb-2">Menu</p>
+						<Select
+							value={form.menuId}
+							options={menuOptions}
+							onChange={(option) => {
+								setForm({
+									...form,
+									menuId: {
+										value: option?.value || "",
+										label: option?.label || "",
+									},
+								});
+							}}
+							theme={(theme) => ({
+								...theme,
+								colors: {
+									...theme.colors,
+									primary: "black",
+								},
+							})}
+							placeholder="Pilih menu"
+							instanceId="menu"
+						/>
+					</div>
+					<div className="w-[130px]">
+						<p className="mb-2">Jumlah</p>
+						<Select
+							value={form.quantity}
+							options={quantityOptions}
+							onChange={(option) => {
+								setForm({
+									...form,
+									quantity: {
+										value: Number(option?.value),
+										label: option?.label || "",
+									},
+								});
+							}}
+							theme={(theme) => ({
+								...theme,
+								colors: {
+									...theme.colors,
+									primary: "black",
+								},
+							})}
+							placeholder="Kuantitas"
+							instanceId="qty"
+						/>
+					</div>
 				</div>
-			</form>
-		</Form >
+				<div className="text-right">
+					<button
+						onClick={onSubmit}
+						className="text-right bg-zinc-900 hover:bg-zinc-700 text-white py-2 px-4 rounded-md disabled:opacity-50"
+						disabled={
+							form.tableId === "" ||
+							form.menuId.value === "" ||
+							form.quantity.value === 0
+						}
+					>
+						Tambah
+					</button>
+				</div>
+			</div>
+		</section>
 	)
 }

@@ -17,18 +17,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={epilogue.className}>
-        <main>
-          <div className='border-t'>
-            <div className='bg-background'>
-              <div className='flex flex-row'>
-                <div className='col-span-3 overflow-auto lg:col-span-5 lg:border-l w-[82%]'>
-                  <div className='px-6 py-6 lg:px-8'>
-                    {children}
-                  </div>
-                </div>
-              </div>
-            </div>
+        <main className="p-5 w-[650px]">
+          <div className="header mb-4">
+            <p className="text-3xl text-black-400 font-medium">
+              Sistem Restoran
+            </p>
+            <p className="text-sm text-gray-500">
+              Ambisius Lab Challange 
+            </p>
           </div>
+          {children}
         </main>
       </body>
     </html>

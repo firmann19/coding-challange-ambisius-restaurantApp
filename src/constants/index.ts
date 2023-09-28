@@ -3,17 +3,17 @@ export type optionType = {
   label: string;
 };
 
-export const MENU_OPTIONS: optionType[] = [
-  {
-    value: "Ayam bakar",
-    label: "Ayam bakar",
-  },
-  {
-    value: "Sate",
-    label: "Sate",
-  },
-  {
-    value: "Nasi Goreng",
-    label: "Nasi Goreng",
-  },
-];
+export type Menu = {
+  id: string;
+  nameMenu: string;
+};
+
+export type Order = {
+  id: string;
+  tableId: string;
+  menuId: string | number;
+  quantity: string | number;
+  menu?: Menu;
+};
+
+export const defaultMenus: string = `[{"id":"45342","name":"Bebek Madura"},{"id":"12234","name":"Sate Kambing"}]`;

@@ -1,120 +1,104 @@
 "use client";
 
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-
+import { AiFillDelete } from "react-icons/ai";
 import { menuFormSchema } from "@/lib/form-schema";
-import { FC, useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { z } from "zod";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
-import { Menu_LISTING_COLUMNS } from "@/components/constants";
-import FieldInput from "@/components/FieldInput";
 import { Button } from "@/components/ui/button";
+import { defaultMenus } from "@/constants";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 type Menu = z.infer<typeof menuFormSchema>;
 
-const MenuForm = ({ initialData }: { initialData?: Menu }) => {
-	const form = useForm<Menu>({
-		resolver: zodResolver(menuFormSchema),
-		defaultValues: initialData,
-	})
-
+const MenuForm = () => {
 	const [menu, setMenu] = useState<Menu[]>([]);
 	const [menus, setMenus] = useState<string>("");
 
-	const onSubmit = (data: Menu) => {
-		//Menambahkan data baru ke array menu
-		setMenu((prev) => [...prev, data]);
-		//Membersihkan input formulir
-		form.reset();
-	}
-
 	useEffect(() => {
-		//Mengubah array menu ke string JSON
-		const json = JSON.stringify(menu);
-		//Menyimpan string JSON ke localstorage dengan kunci "menu"
-		localStorage.setItem("menu", json);
-	}, [menu])
+		let json = localStorage.getItem("menu");
 
-	
-	const json = localStorage.getItem('menu');
-	const menuMakanan = json ? JSON.parse(json) : [];
+		if (json === null) {
+			localStorage.setItem("menu", defaultMenus);
+			json = localStorage.getItem("menu") || "[]";
+		}
+		setMenu(JSON.parse(json));
+	}, [])
 
 	const handleDeleteMenu = (id: string) => {
-		const updatedMenu:any = menu.filter((menuItem) => menuItem.id !== id);
+		const updatedMenu: any = menu.filter((menuItem) => menuItem.id !== id);
 		setMenu(updatedMenu);
 		localStorage.setItem("menu", JSON.stringify(updatedMenu));
-	  };
+	};
 
+	const onSubmit = (): void => {
+		menu?.push({
+			id: Math.floor(100000 + Math.random() * 900000).toString(),
+			nameMenu: menus,
+		});
+
+		localStorage.setItem("menu", JSON.stringify(menu));
+		setMenu(menu);
+		setMenus("");
+	};
 
 	return (
-		<>
-			<Form {...form}>
-				<form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
-					<FieldInput
-						title="Informasi Menu"
-						subtitle="Ini adalah daftar menu restoran kami"
-					>
-						<FormField
-							control={form.control}
-							name='menu'
-							render={({ field }) => (
-								<FormItem>
-									<FormControl>
-										<Input
-											className="w-[450px]"
-											placeholder="Tambahkan menu..."
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage />
-								</FormItem>
-							)}
+			<section className="menu">
+				<div className="h-auto p-5 rounded-md bg-slate-100 text-sm">
+					<p>Menu Makanan</p>
+					<div className="flex my-2">
+						<input
+							value={menus}
+							onChange={(e) => {
+								setMenus(e.target.value);
+							}}
+							className="border rounded-md w-full py-2 px-3 focus:outline-black"
+							type="text"
+							name="menu"
+							placeholder="Tambahkan di sini ..."
 						/>
-						<div className="flex ms-4">
-							<Button size="sm">Tambahkan</Button>
-						</div>
-					</FieldInput>
-				</form>
-			</Form >
+						<Button
+							onClick={onSubmit}
+							className="ml-2 bg-zinc-900 hover:bg-zinc-700 text-white py-2 px-4 rounded-md disabled:opacity-50"
+							disabled={!menu}
+						>
+							Tambah
+						</Button>
+					</div>
 
-			<div className="mt-5">
-				<Table>
-					<TableHeader>
-						<TableRow>
-							{Menu_LISTING_COLUMNS.map(
-								(item: string, i: number) => (
-									<TableHead key={item + i}>{item}</TableHead>
-								)
-							)}
-							<TableHead>Hapus?</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{menuMakanan.map((item: any) => (
-							item && (
-								item.id && item.menu ? (
-									<TableRow key={item.id}>
-										<TableCell>{item.id}</TableCell>
-										<TableCell>{item.menu}</TableCell>
-										<TableCell><Button onClick={() => handleDeleteMenu(item.id)}>Hapus Data</Button></TableCell>
-									</TableRow>
+					<div className="overflow-auto p-4">
+						<Table className="table-auto w-full text-left">
+							<TableHeader className="align-stretch text-zinc-400">
+								<TableRow className="border-b">
+									<TableHead className="h-12 px-4 text-left w-[100px]">ID</TableHead>
+									<TableHead className="h-12 px-4 text-left">Menu</TableHead>
+									<TableHead className="h-12 px-4 text-right">Hapus?</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{menu
+									? menu?.map((menu: Menu) => {
+										return (
+											<TableRow key={+menu.id} className="border-b">
+												<TableCell className="p-4 align-middle">{menu.id}</TableCell>
+												<TableCell className="p-4 align-middle">{menu.nameMenu}</TableCell>
+												<TableCell className="flex justify-end p-4">
+													<button onClick={() => handleDeleteMenu(menu.id)}>
+														<AiFillDelete className="text-red-800" size={20} />
+													</button>
+												</TableCell>
+											</TableRow>
+										);
+									})
+									: null}
+							</TableBody>
+						</Table>
 
-								) : null)
-						))}
-					</TableBody>
-				</Table>
-			</div>
-		</>
+						<p className="text-center text-gray-500 mt-5">
+							Daftar menu restoran Anda
+						</p>
+					</div>
+				</div>
+			</section>
 	);
 };
 

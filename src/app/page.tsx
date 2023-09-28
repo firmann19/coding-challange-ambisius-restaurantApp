@@ -8,7 +8,6 @@ import Image from 'next/image'
 export default function Home() {
 	return (
 		<div>
-			<p className='text-4xl font-bold'>Sistem Restoran</p>
 			<Tabs defaultValue="menu" className='py-5'>
 				<TabsList className="mb-8">
 					<TabsTrigger value="menu">Menu</TabsTrigger>
