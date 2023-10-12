@@ -10,13 +10,17 @@ import { z } from 'zod';
 const OrderForm = () => {
 	type Menu = z.infer<typeof menuFormSchema>;
 
+	//Membuat state form dengan tipe data yang berasal dari OrderForm
 	const [form, setForm] = useState<OrderForm>({
 		tableId: "",
 		menuId: { value: "", label: "Pilih Menu" },
 		quantity: { value: 0, label: "Kuantitas" },
 	});
 
+	//Membuat state menu dengan tipe data yang berasal dari Menu
 	const [menu, setMenu] = useState<Menu[] | []>();
+
+	//Membuat select menu dan kuantitas dengan tipe data yang berasal dari optionType
 	let menuOptions: optionType[] = [{ value: "", label: "Pilih menu" }];
 	const quantityOptions: optionType[] = [
 		{ value: 0, label: "Kuantitas" },
@@ -25,6 +29,7 @@ const OrderForm = () => {
 		{ value: 3, label: "3" },
 	];
 
+	//Menampilkan data menu yang ada di localStorage
 	useEffect(() => {
 		const localMenus = localStorage.getItem('menu');
 		setMenu(JSON.parse(localMenus || "[]"));
@@ -37,17 +42,23 @@ const OrderForm = () => {
 		});
 	});
 
+	//Melakukan submit terhadap data menu dan kuantitas yang sudah di select
 	const onSubmit = (): void => {
 		let localStorageOrders: Array<Order> | string | null =
 			localStorage.getItem("orders");
 
+		//Jika localStorage = null maka akan menampilkan array kosong
 		if (localStorageOrders === null) {
+			//Menyimpan order dengan array kosong kedalam localStorage
 			localStorage.setItem("orders", "[]");
+			//Menampilkan order dengan array kosong
 			localStorageOrders = localStorage.getItem("orders") || "[]";
 		}
 
+		//melakukan parsing terhadap data order menjadi JSON pada localStorage
 		localStorageOrders = JSON.parse(localStorageOrders) as Array<Order>;
 
+		//Melakukan push terhadap data order kedalam localStorage
 		localStorageOrders.push({
 			id: Math.floor(100000 + Math.random() * 900000).toString(),
 			tableId: form.tableId,
@@ -61,6 +72,7 @@ const OrderForm = () => {
 			quantity: quantityOptions[0],
 		});
 
+		//Melakukan penyimpanan data orders kedalam localStorage
 		localStorage.setItem("orders", JSON.stringify(localStorageOrders));
 	}
 

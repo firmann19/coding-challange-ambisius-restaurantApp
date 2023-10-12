@@ -8,9 +8,11 @@ import { z } from "zod";
 const DapurForm = () => {
 type Menu = z.infer<typeof menuFormSchema>;
 
+//Membuat state menu dan order dengan tipe data yang berasal dari Menu dan Order beserta array
 const [menu, setMenu] = useState<Menu[]>([]);
 const [order, setOrder] = useState<Order[]>([]);
 
+//Menampilkan data menu dan order
 useEffect(() => {
     const localMenu = localStorage.getItem("menu");
     const localOrder = localStorage.getItem("orders");
@@ -19,10 +21,13 @@ useEffect(() => {
     setOrder(JSON.parse(localOrder || "[]"));
 }, []);
 
+
+//Membuat maping pada data menu berdasarkan id
 const mapMenu: Map<string | number, Menu> = new Map(
     menu.map((menu: Menu) => [menu.id, menu])
 );
 
+//Kemudian melakukan filter terhadap data order untuk ditampilkan tiap meja
 const joinResult: Order[] = order
     ?.filter((order: Order) => mapMenu.has(order.menuId))
     .map((order: Order) => ({

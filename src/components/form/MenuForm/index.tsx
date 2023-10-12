@@ -10,32 +10,47 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 const MenuForm = () => {
 	type Menu = z.infer<typeof menuFormSchema>;
-
+	
+	//Membuat state menu bertipe array dan string
 	const [menu, setMenu] = useState<Menu[]>([]);
 	const [menus, setMenus] = useState<string>("");
 
+	//Menampilkan list menu, jika menu = null maka akan menampilkan list menu default (yang sudah ditetapkan)
 	useEffect(() => {
+		//Menampilkan data menu
 		let dataMenu = localStorage.getItem("menu");
 
+		//Jika data menu = null, maka menampilkan list default menu
 		if (dataMenu === null) {
+			//setItem digunakan untuk menyimpan data menu (dalam konteks ini defaultMenus yang disimpan) 
 			localStorage.setItem("menu", defaultMenus);
+			//getItem untuk menampilkan data menu
 			dataMenu = localStorage.getItem("menu") || "[]";
 		}
+
+		//data menu kemudian di parsing menjadi JSON di localStorage
 		setMenu(JSON.parse(dataMenu));
 	}, [])
 
+	//Melakukan delete menu berdasarkan id menu tersebut
 	const handleDeleteMenu = (id: string) => {
+		//Melakukan filter berdasarkan id untuk data menu yang dihapus
 		const updatedMenu: any = menu.filter((menuItem) => menuItem.id !== id);
 		setMenu(updatedMenu);
+
+		//Data menu disimpan kembali ke localStorage
 		localStorage.setItem("menu", JSON.stringify(updatedMenu));
 	};
 
+	//Melakukan submit (penambahan) pada menu yang sudah di input
 	const onSubmit = (): void => {
+		//Melakukan push terhadap id dan menu yang sudah di input
 		menu.push({
 			id: Math.floor(100000 + Math.random() * 900000).toString(),
 			nameMenu: menus,
 		});
 
+		//Menyimpan data menu ke localStorage
 		localStorage.setItem("menu", JSON.stringify(menu));
 		setMenu(menu);
 		setMenus("");

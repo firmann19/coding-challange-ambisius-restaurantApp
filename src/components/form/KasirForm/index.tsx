@@ -10,16 +10,28 @@ import { z } from 'zod'
 export default function KasirForm() {
     type Menu = z.infer<typeof menuFormSchema>;
 
+    //Membuat state menu berdasarkan tipe data dari Menu
     const [menu, setMenu] = useState<Menu[]>([]);
+
+    //Membuat state order berdasarkan tipe data dari Order
     const [order, setOrder] = useState<Order[]>([]);
+
+    //Membuat state orderById berdasarkan tipe data dari Order
     const [orderById, setOrderById] = useState<Order[]>();
+
+    //Membuat state tableId berdasarkan tipe data dari optionType
     const [tableId, setTableId] = useState<optionType>({
         value: "",
         label: "Nomor Meja",
     });
+
+    //Membuat state isShow dengan tipe data boolean
     const [isShow, setIsShow] = useState<boolean>(false);
+    
+    //Membuat select Nomor Meja berdasarkan tipe data dari optionType
     let tableOptions: optionType[] = [{ value: "", label: "Nomor Meja" }];
 
+    //Menampilkan data menu dan order
     useEffect(() => {
         const localMenu = localStorage.getItem("menu") || "[]";
         const localOrder = localStorage.getItem("orders") || "[]";
@@ -28,8 +40,10 @@ export default function KasirForm() {
         setOrder(JSON.parse(localOrder));
     }, []);
 
+    //Melakukan pembuatan id unik dengan tipe data string
     const uniqueId = new Set<string>();
 
+    //Melakukan filter terhadap order yang dipilih
     const filterOrder = order?.filter((order: Order) => {
         if (!uniqueId.has(order.tableId)) {
             uniqueId.add(order.tableId);
@@ -39,6 +53,7 @@ export default function KasirForm() {
         return false;
     });
 
+    //Melakukan filter dan maping pada order beserta menu 
     filterOrder
         ?.sort((a: Order, b: Order) => Number(a.tableId) - Number(b.tableId))
         .map((order: Order) => {
@@ -52,6 +67,7 @@ export default function KasirForm() {
         menu?.map((menu: Menu) => [menu.id, menu])
     );
 
+    //Menampilkan hasil dari order yang sudah di filter
     const Result = order
         ?.filter((order: Order) => mapMenus.has(order.menuId))
         .map((order: Order) => ({
@@ -59,6 +75,8 @@ export default function KasirForm() {
             menu: mapMenus.get(order.menuId),
         }));
 
+
+    //Melakukan submit/print
     const handlePrint = (): void => {
         setOrderById(
             Result.filter((order: Order) => order.tableId === tableId.value)
@@ -67,6 +85,7 @@ export default function KasirForm() {
         setIsShow(true);
     };
 
+    //Melakukan delete
     const handleDelete = (): void => {
         const deleteById = order?.filter(
             (order: Order) => order.tableId !== tableId.value
